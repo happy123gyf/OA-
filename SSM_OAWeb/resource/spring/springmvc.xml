@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+            http://www.springframework.org/schema/beans/spring-beans-3.2.xsd  
+            http://www.springframework.org/schema/context   
+            http://www.springframework.org/schema/context/spring-context-3.2.xsd  
+            http://www.springframework.org/schema/mvc  
+            http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd 
+            http://www.springframework.org/schema/util  
+            http://www.springframework.org/schema/util/spring-util-3.2.xsd">    
+   
+    <!-- HandlerMapping  HandlerAdapter handler(controller)   -->
+	<mvc:annotation-driven />
+
+	<!-- 
+		 加了类型转换器，静态资源 使用此种方法解析
+    	 它的意思就是没有映射到的URL交给默认的web容器中的servlet进行处理：
+     -->
+	<mvc:default-servlet-handler/>
+
+
+	<!-- 扫描controller包 -->
+	<context:component-scan base-package="cn.web.workflow.controller"></context:component-scan>
+	
+	<!-- 视图解析器 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+	
+	<!-- 支持文件上传 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="104857600" />
+		<property name="maxInMemorySize" value="4096" />
+		<property name="defaultEncoding" value="UTF-8"></property>
+	</bean>
+
+	<!-- 校验器
+	<bean id="validator"
+		  class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		&lt;!&ndash; hibernate校验器 &ndash;&gt;
+		<property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+		&lt;!&ndash; 指定校验使用的资源文件，在文件中配置校验错误信息，如果不指定则默认使用classpath下的ValidationMessages.properties &ndash;&gt;
+		<property name="validationMessageSource" ref="messageSource" />
+	</bean>-->
+
+	<bean class="cn.web.workflow.shiro.exception.CustomExceptionResolver"/>
+
+	
+</beans>

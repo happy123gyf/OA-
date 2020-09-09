@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.web.workflow.mapper.SysPermissionMapperCustom" >
+  
+  
+  <!-- 根据用户id查询url -->
+  <select id="findPermissionListByEmpname" parameterType="string" resultType="cn.web.workflow.pojo.SysPermission">
+	  SELECT
+		  *
+	  FROM
+		  sys_permission
+	  WHERE  id IN
+			 (SELECT
+				  sys_permission_id
+			  FROM
+				  sys_role_permission
+			  WHERE sys_role_id IN
+					(SELECT
+						 sys_role_id
+					 FROM
+						 sys_user_role
+					 WHERE sys_user_id = #{empname}));
+
+  </select>
+  
+
+  
+</mapper>

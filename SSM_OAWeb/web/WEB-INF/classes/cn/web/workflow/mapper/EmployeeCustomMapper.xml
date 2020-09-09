@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.web.workflow.mapper.EmployeeCustomMapper" >
+
+    <resultMap id="roleAndPermissionRusult" type="cn.web.workflow.pojo.SysRole">
+    <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <collection property="permissionList" ofType="cn.web.workflow.pojo.SysPermission">
+            <id column="permission_id" property="id"/>
+            <result column="permission_name" property="name"/>
+            <result column="type" property="type"/>
+            <result column="url" property="url"/>
+            <result column="percode" property="percode"/>
+
+        </collection>
+
+
+    </resultMap>
+    
+
+  <select id="findUserAndRoleList" resultType="cn.web.workflow.pojo.EmployeeCustom">
+        select e.*,
+               s1.sys_role_id roleId,
+               s2.name rolename,
+               e2.name manager
+        from employee e
+                inner join employee e2 on e.manager_id =e2.id
+inner join sys_user_role s1 on e.name = s1.sys_user_id
+inner join sys_role s2 on s1.sys_role_id = s2.id;
+
+  </select>
+
+
+    <select id="findRoleAndPermissionListByEmpname" resultMap="roleAndPermissionRusult" parameterType="java.lang.String">
+        select s1.*,
+               s3.id permission_id,
+               s3.name permission_name,
+               s3.type,
+               s3.url,
+               s3.percode
+        from sys_role s1
+                 inner join sys_role_permission s2 on s1.id = s2.sys_role_id
+                 inner join sys_permission s3 on s2.sys_permission_id=s3.id
+                 inner join sys_user_role s4 on s4.sys_role_id = s1.id
+                 inner join employee e on e.name = s4.sys_user_id
+        where e.name = #{empname}
+    </select>
+
+</mapper>
